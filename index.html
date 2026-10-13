@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Orders — Renivet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="#" class="wordmark" data-nav="landing">Renivet</a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#">Shop</a>
+      <a href="#">Collections</a>
+      <a href="#">Sustainability</a>
+      <a href="#" class="is-active" data-nav="landing">Corporate Orders</a>
+    </nav>
+    <div class="header-side">
+      <button class="icon-btn" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+      </button>
+      <button class="icon-btn bag-btn" aria-label="Bag">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1.2 12H7.2L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+        <span class="bag-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="progress" id="progressBar" hidden>
+  <div class="progress__inner">
+    <div class="progress__steps" id="progressSteps"></div>
+    <div class="progress__compact" id="progressCompact"></div>
+  </div>
+</div>
+
+<main id="app">
+
+  <!-- 01 — LANDING -->
+  <section class="screen is-active" id="screen-landing">
+    <div class="landing-hero">
+      <div class="landing-hero__text">
+        <p class="eyebrow">Renivet · Corporate</p>
+        <h1 class="display">Corporate Orders</h1>
+        <p class="lede">Thoughtfully made merchandise for your team, brand or business.</p>
+        <p class="body-copy">Create custom corporate merchandise with sustainable products, flexible quantities and personalised branding.</p>
+        <ul class="assurances">
+          <li>Orders from 50 units</li>
+          <li>GST invoices</li>
+          <li>Artwork reviewed by our team</li>
+        </ul>
+      </div>
+      <figure class="landing-hero__image">
+        <img src="assets/hero-gifting.png" alt="Sustainable corporate merchandise flat lay">
+      </figure>
+    </div>
+
+    <h2 class="section-question">What are you looking to order?</h2>
+    <div class="category-cards">
+      <article class="category-card" data-nav="apparel" tabindex="0" role="button" aria-label="Explore Apparel">
+        <div class="category-card__image"><img src="assets/apparel-card.png" alt="Folded organic cotton apparel"></div>
+        <div class="category-card__body">
+          <h3>Apparel</h3>
+          <p>T-shirts · Hoodies · Jackets · Polo · Sweatshirts</p>
+          <span class="category-card__cta">Explore Apparel
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </span>
+        </div>
+      </article>
+      <article class="category-card" data-nav="nonapparel" tabindex="0" role="button" aria-label="Explore Merchandise">
+        <div class="category-card__image"><img src="assets/merch-card.png" alt="Sustainable merchandise: bottles, mugs, bags, stationery"></div>
+        <div class="category-card__body">
+          <h3>Non-Apparel</h3>
+          <p>Bottles · Mugs · Bags · Stationery · Other corporate merchandise</p>
+          <span class="category-card__cta">Explore Merchandise
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </span>
+        </div>
+      </article>
+    </div>
+
+    <p class="step-hint">Step 01 · Product — corporate orders start at 50 units</p>
+  </section>
+
+  <!-- 02 — APPAREL -->
+  <section class="screen" id="screen-apparel">
+    <div class="screen-head">
+      <h2 class="title">Choose your apparel</h2>
+      <p class="sub">Tell us what you'd like to create. You can customise the product, branding and quantity in the next steps.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="field field--span2">
+        <label for="apType">Product Type</label>
+        <div class="select-wrap">
+          <select id="apType" data-model="apparel.type">
+            <option value="" disabled selected>Select a product</option>
+            <option>T-Shirt</option><option>Hoodie</option><option>Jacket</option>
+            <option>Polo</option><option>Sweatshirt</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field field--span2">
+        <label>Style</label>
+        <div class="chips" id="apparelStyles"></div>
+      </div>
+      <div class="field">
+        <label for="apFabric">Fabric</label>
+        <div class="select-wrap">
+          <select id="apFabric" data-model="apparel.fabric">
+            <option value="" disabled selected>Select fabric</option>
+            <option>Organic Cotton</option><option>Recycled Cotton</option><option>Hemp</option>
+            <option>Linen Blend</option><option>Recycled Polyester</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="apGsm">GSM</label>
+        <div class="select-wrap">
+          <select id="apGsm" data-model="apparel.gsm">
+            <option value="" disabled selected>Select GSM</option>
+            <option>160 GSM</option><option>180 GSM</option><option>200 GSM</option>
+            <option>220 GSM</option><option>240 GSM</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+        <input class="gsm-custom" id="apGsmCustom" type="number" placeholder="Enter custom GSM" hidden data-model="apparel.gsmCustom">
+      </div>
+      <div class="field field--span2">
+        <label>Colour</label>
+        <div class="swatches" id="apparelColors"></div>
+        <label class="check-row">
+          <input type="checkbox" id="apCustomColor" data-model="apparel.customColorOn">
+          <span>Custom colour available — request a specific shade</span>
+        </label>
+        <input class="custom-color" id="apCustomColorText" type="text" placeholder="e.g. Deep forest green (Pantone 3435C)" hidden>
+      </div>
+      <div class="field field--span2">
+        <label>Size <span class="label-note">select all you need</span></label>
+        <div class="chips" id="apparelSizes"></div>
+      </div>
+    </div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="landing">Back</button>
+      <button class="btn btn-primary" id="apContinue" data-nav="customisation">Continue to Customisation</button>
+    </div>
+    <p class="form-error" id="apError" hidden>Please choose a product type, style, fabric, colour and at least one size.</p>
+  </section>
+
+  <!-- 03 — NON-APPAREL -->
+  <section class="screen" id="screen-nonapparel">
+    <div class="screen-head">
+      <h2 class="title">Choose your merchandise</h2>
+      <p class="sub">Select the product you want to customise.</p>
+    </div>
+
+    <div class="product-categories" id="naCategories">
+      <button class="prod-cat" data-na="Bottles">Bottles</button>
+      <button class="prod-cat" data-na="Mugs">Mugs</button>
+      <button class="prod-cat" data-na="Bags">Bags</button>
+      <button class="prod-cat" data-na="Stationery">Stationery</button>
+      <button class="prod-cat" data-na="Other Merchandise">Other Merchandise</button>
+    </div>
+
+    <div class="form-grid" id="naDynamic" hidden></div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="landing">Back</button>
+      <button class="btn btn-primary" id="naContinue" data-nav="customisation" disabled>Continue to Customisation</button>
+    </div>
+  </section>
+
+  <!-- 04 — CUSTOMISATION -->
+  <section class="screen" id="screen-customisation">
+    <div class="screen-head">
+      <h2 class="title">Make it yours</h2>
+      <p class="sub">Tell us how you'd like your brand to appear on the product.</p>
+    </div>
+
+    <div class="field">
+      <label>Branding Method <span class="label-note">choose one or more</span></label>
+      <div class="option-cards" id="brandMethods">
+        <label class="option-card"><input type="checkbox" value="Screen Printing"><span class="option-card__box"><span class="tick"></span><b>Screen Printing</b><i>Best for bold, repeated logos on fabric. Cost-effective at volume.</i></span></label>
+        <label class="option-card"><input type="checkbox" value="Digital Printing"><span class="option-card__box"><span class="tick"></span><b>Digital Printing</b><i>Full-colour detail, soft hand-feel, great for gradients.</i></span></label>
+        <label class="option-card"><input type="checkbox" value="Embroidery"><span class="option-card__box"><span class="tick"></span><b>Embroidery</b><i>A quietly premium finish for chest logos and caps.</i></span></label>
+        <label class="option-card"><input type="checkbox" value="Embossing"><span class="option-card__box"><span class="tick"></span><b>Embossing</b><i>Pressed texture — refined on leather goods and stationery.</i></span></label>
+        <label class="option-card"><input type="checkbox" value="Engraving"><span class="option-card__box"><span class="tick"></span><b>Engraving</b><i>Laser-etched permanence on steel bottles and wood.</i></span></label>
+        <label class="option-card"><input type="checkbox" value="Other"><span class="option-card__box"><span class="tick"></span><b>Other</b><i>Tell us in the notes below.</i></span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Print / Branding Placement</label>
+      <div class="chips" id="placements"></div>
+    </div>
+
+    <div class="field">
+      <label for="custNotes">Any special branding or production requirements?</label>
+      <textarea id="custNotes" rows="4" data-model="customisation.notes" placeholder="Please mention colour requirements, placement preferences, packaging requirements, etc."></textarea>
+    </div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-back="product">Back</button>
+      <button class="btn btn-primary" id="custContinue" data-nav="artwork">Upload Artwork</button>
+    </div>
+    <p class="form-error" id="custError" hidden>Please choose at least one branding method and a placement.</p>
+  </section>
+
+  <!-- 05 — ARTWORK -->
+  <section class="screen" id="screen-artwork">
+    <div class="screen-head">
+      <h2 class="title">Upload your artwork</h2>
+      <p class="sub">Upload your company logo or artwork. Our team will review the file before confirming the final quotation.</p>
+    </div>
+
+    <div class="upload-layout">
+      <div class="upload-main">
+        <p class="field-label">Upload Logo / Artwork</p>
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload logo or artwork">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <p><b>Drag &amp; drop</b> your artwork here, or <span class="link">browse files</span></p>
+          <p class="dropzone__formats">Accepted formats: <b>PDF · PNG · SVG · AI</b></p>
+        </div>
+        <input type="file" id="fileInput" accept=".pdf,.png,.svg,.ai" hidden>
+
+        <div class="file-card" id="fileCard" hidden>
+          <div class="file-card__icon" id="fileIcon">PDF</div>
+          <div class="file-card__info">
+            <p class="file-card__name" id="fileName">Company_Logo.pdf</p>
+            <p class="file-card__meta"><span id="fileSize">2.4 MB</span> · <span class="ok">Uploaded successfully</span></p>
+          </div>
+          <div class="file-card__actions">
+            <button class="text-btn" id="fileReplace">Replace</button>
+            <button class="text-btn text-btn--danger" id="fileRemove">Remove</button>
+          </div>
+        </div>
+
+        <p class="reassurance">Your artwork will be reviewed by the Renivet team before production.</p>
+      </div>
+
+      <aside class="upload-side">
+        <p class="field-label">Have a Canva design?</p>
+        <input type="url" id="canvaLink" class="input" data-model="artwork.canva" placeholder="Paste Canva design link">
+        <p class="side-note">Share the viewable link — our team will request edit access if needed.</p>
+        <div class="or-divider"><span>or</span></div>
+        <button class="btn btn-ghost btn-full" id="skipArtwork">I'll share artwork with the team later</button>
+      </aside>
+    </div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="customisation">Back</button>
+      <button class="btn btn-primary" id="artContinue" data-nav="quantity">Continue to Quantity</button>
+    </div>
+  </section>
+
+  <!-- 06 — QUANTITY -->
+  <section class="screen" id="screen-quantity">
+    <div class="screen-head">
+      <h2 class="title">How many do you need?</h2>
+      <p class="sub">Corporate orders start at a minimum quantity of 50 units.</p>
+    </div>
+
+    <div class="moq-banner">
+      <span class="moq-banner__label">Minimum Order Quantity</span>
+      <span class="moq-banner__value">50 units</span>
+    </div>
+
+    <div id="qtyApparel" hidden>
+      <table class="size-table" id="sizeTable">
+        <thead><tr><th>Size</th><th>Quantity</th><th></th></tr></thead>
+        <tbody id="sizeRows"></tbody>
+      </table>
+      <div class="total-line"><span>Total Quantity</span><b id="qtyTotalApparel">0</b></div>
+    </div>
+
+    <div id="qtySimple" hidden>
+      <p class="field-label">Required quantity</p>
+      <div class="stepper stepper--lg">
+        <button class="step-btn" data-simple="-">−</button>
+        <input type="number" id="simpleQty" value="0" min="0" step="1">
+        <button class="step-btn" data-simple="+">+</button>
+      </div>
+    </div>
+
+    <p class="min-error" id="minError" hidden>Minimum order quantity is 50 units. Please increase your quantity to continue.</p>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="artwork">Back</button>
+      <button class="btn btn-primary" id="qtyContinue" data-nav="quotation" disabled>View Price Quotation</button>
+    </div>
+  </section>
+
+  <!-- 07 — QUOTATION -->
+  <section class="screen" id="screen-quotation">
+    <div class="screen-head">
+      <h2 class="title">Your estimated quotation</h2>
+      <p class="sub">Here's an estimate based on your selected product, customisation and quantity. Final pricing will be confirmed by the Renivet corporate team after reviewing your requirements and artwork.</p>
+    </div>
+
+    <div class="quote-layout">
+      <figure class="quote-image">
+        <img src="assets/product-tee.png" id="quoteImg" alt="Selected product">
+        <figcaption id="quoteImgCap">Custom T-Shirt</figcaption>
+      </figure>
+
+      <div class="quote-card">
+        <div class="quote-card__row"><p class="k">Product</p><p class="v" id="qProduct">—</p></div>
+        <div class="quote-card__row"><p class="k">Specifications</p><p class="v" id="qSpecs">—</p></div>
+        <div class="quote-card__row"><p class="k">Customisation</p><p class="v" id="qCustom">—</p></div>
+        <div class="quote-card__row"><p class="k">Quantity</p><p class="v" id="qQty">—</p></div>
+        <div class="quote-card__divider"></div>
+        <p class="k quote-card__section">Price breakdown</p>
+        <div class="money-row"><span>Product Cost</span><b id="qProductCost">—</b></div>
+        <div class="money-row"><span>Customisation</span><b id="qCustomCost">—</b></div>
+        <div class="money-row"><span>Shipping</span><b id="qShipping">—</b></div>
+        <div class="money-row money-row--sub"><span>Subtotal</span><b id="qSubtotal">—</b></div>
+        <div class="money-row"><span>GST (12%)</span><b id="qGst">—</b></div>
+        <div class="money-row money-row--total"><span>Estimated Total</span><b id="qTotal">—</b></div>
+        <p class="estimate-note">This is an estimated quotation. Final pricing may change depending on artwork, production requirements, shipping location and final approval by the Renivet team.</p>
+      </div>
+    </div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="customisation" id="qEdit">Edit Requirements</button>
+      <button class="btn btn-primary" data-nav="company">Get Final Quotation</button>
+    </div>
+  </section>
+
+  <!-- 08 — COMPANY -->
+  <section class="screen" id="screen-company">
+    <div class="screen-head">
+      <h2 class="title">Tell us about your company</h2>
+      <p class="sub">We'll use these details to prepare your quotation and coordinate your order.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="field"><label for="coName">Company Name <i class="req">*</i></label><input class="input" id="coName" data-model="company.name" data-req autocomplete="organization" placeholder="Studio Arc Design Pvt. Ltd."></div>
+      <div class="field"><label for="coPerson">Contact Person <i class="req">*</i></label><input class="input" id="coPerson" data-model="company.person" data-req placeholder="Aarav Mehta"></div>
+      <div class="field"><label for="coDesig">Designation</label><input class="input" id="coDesig" data-model="company.designation" placeholder="Head of People &amp; Culture"></div>
+      <div class="field"><label for="coEmail">Business Email <i class="req">*</i></label><input class="input" id="coEmail" type="email" data-model="company.email" data-req placeholder="aarav@studioarc.in"></div>
+      <div class="field"><label for="coPhone">Phone Number <i class="req">*</i></label><input class="input" id="coPhone" type="tel" data-model="company.phone" data-req placeholder="+91 98XXXXXXXX"></div>
+      <div class="field"><label for="coGst">GST Number</label><input class="input" id="coGst" data-model="company.gst" placeholder="29ABCDE1234F1Z5"></div>
+    </div>
+
+    <h3 class="form-section-title">Billing Address</h3>
+    <div class="form-grid">
+      <div class="field field--span2"><label for="billLine">Address Line <i class="req">*</i></label><input class="input" id="billLine" data-model="company.billLine" data-req placeholder="42 Residency Road, Ashok Nagar"></div>
+      <div class="field"><label for="billCity">City <i class="req">*</i></label><input class="input" id="billCity" data-model="company.billCity" data-req placeholder="Bengaluru"></div>
+      <div class="field"><label for="billState">State <i class="req">*</i></label><input class="input" id="billState" data-model="company.billState" data-req placeholder="Karnataka"></div>
+      <div class="field"><label for="billPin">PIN Code <i class="req">*</i></label><input class="input" id="billPin" inputmode="numeric" data-model="company.billPin" data-req placeholder="560025"></div>
+      <div class="field"><label for="billCountry">Country</label><input class="input" id="billCountry" value="India" data-model="company.billCountry"></div>
+    </div>
+
+    <label class="check-row check-row--strong">
+      <input type="checkbox" id="sameAddr" checked>
+      <span>Shipping address is the same as billing address</span>
+    </label>
+
+    <div id="shipBlock" hidden>
+      <h3 class="form-section-title">Shipping Address</h3>
+      <div class="form-grid">
+        <div class="field field--span2"><label for="shipLine">Address Line</label><input class="input" id="shipLine" data-model="company.shipLine"></div>
+        <div class="field"><label for="shipCity">City</label><input class="input" id="shipCity" data-model="company.shipCity"></div>
+        <div class="field"><label for="shipState">State</label><input class="input" id="shipState" data-model="company.shipState"></div>
+        <div class="field"><label for="shipPin">PIN Code</label><input class="input" id="shipPin" inputmode="numeric" data-model="company.shipPin"></div>
+        <div class="field"><label for="shipCountry">Country</label><input class="input" id="shipCountry" value="India" data-model="company.shipCountry"></div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:28px">
+      <label for="coNotes">Additional Requirements</label>
+      <textarea id="coNotes" rows="4" data-model="company.notes" placeholder="Anything else our corporate team should know?"></textarea>
+    </div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="quotation">Back</button>
+      <button class="btn btn-primary" id="coContinue" data-nav="review">Review Order</button>
+    </div>
+    <p class="form-error" id="coError" hidden>Please complete the required fields marked *</p>
+  </section>
+
+  <!-- 09 — REVIEW -->
+  <section class="screen" id="screen-review">
+    <div class="screen-head">
+      <h2 class="title">Review your corporate order</h2>
+      <p class="sub">Please check your order details before confirming.</p>
+    </div>
+
+    <div class="review-layout">
+      <div class="review-sections" id="reviewSections"></div>
+
+      <aside class="review-side">
+        <div class="payment-terms">
+          <p class="payment-terms__title">Payment Terms</p>
+          <div class="payment-terms__item"><b>50% Advance</b><span>Due at the time of placing the order.</span></div>
+          <div class="payment-terms__item"><b>50% Balance</b><span>Due after receiving the order / as per agreed terms.</span></div>
+          <div class="payment-terms__total"><span>Estimated Total</span><b id="rvTotal">—</b></div>
+          <div class="payment-terms__total payment-terms__total--due"><span>Due now</span><b id="rvDue">—</b></div>
+        </div>
+      </aside>
+    </div>
+
+    <label class="check-row check-row--confirm">
+      <input type="checkbox" id="confirmCheck">
+      <span>I confirm that the information provided above is correct and I agree to the corporate order payment terms.</span>
+    </label>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="company">Back</button>
+      <button class="btn btn-primary" id="rvConfirm" data-nav="payment" disabled>Confirm Corporate Order</button>
+    </div>
+  </section>
+
+  <!-- 10 — PAYMENT -->
+  <section class="screen" id="screen-payment">
+    <div class="screen-head">
+      <h2 class="title">Secure your order</h2>
+      <p class="sub">Pay 50% advance to initiate production.</p>
+    </div>
+
+    <div class="pay-layout">
+      <div class="pay-summary">
+        <p class="pay-summary__label">Estimated Order Total</p>
+        <p class="pay-summary__total" id="payTotal">₹0</p>
+        <div class="pay-split">
+          <div class="pay-split__now">
+            <p class="k">Pay Now · 50% Advance</p>
+            <p class="amount" id="payAdvance">₹0</p>
+          </div>
+          <div class="pay-split__later">
+            <p class="k">Remaining · 50% Balance</p>
+            <p class="amount" id="payBalance">₹0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pay-methods">
+        <p class="field-label">Payment Method</p>
+        <label class="pay-method"><input type="radio" name="paym" value="UPI" checked>
+          <span class="pay-method__box"><b>UPI</b><i>Google Pay · PhonePe · Paytm · BHIM</i><span class="pay-method__badge">Instant</span></span></label>
+        <label class="pay-method"><input type="radio" name="paym" value="Credit / Debit Card">
+          <span class="pay-method__box"><b>Credit / Debit Card</b><i>Visa, Mastercard, RuPay · Indian and international cards</i></span></label>
+        <label class="pay-method"><input type="radio" name="paym" value="Net Banking">
+          <span class="pay-method__box"><b>Net Banking</b><i>All major Indian banks supported</i></span></label>
+
+        <div id="upiField">
+          <label class="field-label" for="upiId">UPI ID</label>
+          <input class="input" id="upiId" placeholder="yourname@bank" value="aarav@okhdfcbank">
+        </div>
+
+        <div class="trust-row">
+          <span>Secure Payment</span><span>GST Invoice</span><span>Corporate Order Support</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-actions">
+      <button class="btn btn-ghost" data-nav="review">Back</button>
+      <button class="btn btn-primary btn-pay" id="payBtn">Pay 50% Advance <span id="payBtnAmt"></span></button>
+    </div>
+  </section>
+
+  <!-- 11 — CONFIRMATION -->
+  <section class="screen" id="screen-confirmation">
+    <div class="confirm-wrap">
+      <div class="confirm-seal" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4.5 4.5L19 8"/></svg>
+      </div>
+      <h2 class="title title--center">Corporate Order Submitted Successfully</h2>
+      <p class="sub sub--center">Thank you. Your corporate order request has been received. Our team will review your requirements and coordinate the next steps with you.</p>
+
+      <div class="order-card">
+        <div class="order-card__row"><span>Order ID</span><b>REN-COR-10284</b></div>
+        <div class="order-card__row"><span>Product</span><b id="cfProduct">—</b></div>
+        <div class="order-card__row"><span>Quantity</span><b id="cfQty">—</b></div>
+        <div class="order-card__row"><span>Amount Paid</span><b class="green" id="cfPaid">—</b></div>
+        <div class="order-card__row"><span>Remaining Amount</span><b id="cfBalance">—</b></div>
+        <div class="order-card__row"><span>Expected Timeline</span><b>Production timeline will be confirmed by the Renivet corporate team.</b></div>
+      </div>
+
+      <p class="confirm-contact">Our corporate team will contact you regarding artwork approval, final quotation, production and delivery.</p>
+
+      <div class="screen-actions screen-actions--center">
+        <button class="btn btn-primary" id="cfDetails">View Order Details</button>
+        <button class="btn btn-ghost" data-nav="landing">Back to Renivet</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="mini-footer">
+  <p>Renivet — conscious, responsibly made. · <a href="#">Corporate Orders</a> · <a href="#">Support</a> · <a href="#">GST &amp; invoicing</a></p>
+</footer>
+
+<div class="overlay" id="payOverlay" hidden>
+  <div class="overlay__card">
+    <div class="spinner"></div>
+    <p>Processing your payment…</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

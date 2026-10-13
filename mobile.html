@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Orders — Renivet (Mobile)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<header class="m-header">
+  <button class="back-link" id="headerBack" aria-label="Go back">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+  </button>
+  <span class="wordmark">Renivet</span>
+  <span class="header-spacer"></span>
+</header>
+
+<div class="stepbar" id="stepbar" hidden>
+  <div class="stepbar__row"><span id="stepLabel">Step 1 of 7</span><b id="stepName">Product</b></div>
+  <div class="stepbar__rail"><i id="stepFill"></i></div>
+</div>
+
+<details class="mini-summary" id="miniSummary" hidden>
+  <summary><span id="miniLine">No product selected yet</span><span class="mini-summary__chev"></span></summary>
+  <dl id="miniRows"></dl>
+</details>
+
+<main>
+
+  <!-- 1 · Corporate Orders -->
+  <section class="screen is-active" id="s-landing">
+    <h1 class="h1">Corporate Orders</h1>
+    <p class="lede">Custom merchandise for your team, brand or business.</p>
+
+    <p class="question">What are you looking to order?</p>
+
+    <button class="cat-card" data-go="product" data-cat="apparel">
+      <img src="assets/apparel-card.png" alt="Folded organic cotton t-shirts, hoodies and jackets">
+      <span class="cat-card__body">
+        <b>Apparel</b>
+        <span>T-shirts, hoodies and jackets.</span>
+        <i>Explore Apparel →</i>
+      </span>
+    </button>
+
+    <button class="cat-card" data-go="product" data-cat="merch">
+      <img src="assets/merch-card.png" alt="Steel bottle, ceramic mug and canvas tote">
+      <span class="cat-card__body">
+        <b>Non-Apparel</b>
+        <span>Bottles, mugs, bags and stationery.</span>
+        <i>Explore Merchandise →</i>
+      </span>
+    </button>
+
+    <p class="fineprint">Corporate orders start at 50 units. Prices shown are estimates until confirmed by our team.</p>
+  </section>
+
+  <!-- 2 · Product Details -->
+  <section class="screen" id="s-product">
+    <h1 class="h1">Choose your product</h1>
+    <p class="lede" id="productLede">Tell us what you'd like to create.</p>
+
+    <div id="pApparel" hidden>
+      <div class="field">
+        <label for="apType">Product type</label>
+        <select id="apType">
+          <option value="" disabled selected>Select a product</option>
+          <option>T-Shirt</option><option>Hoodie</option><option>Jacket</option>
+          <option>Polo</option><option>Sweatshirt</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Style</label>
+        <div class="chips" id="apStyles"></div>
+      </div>
+      <div class="field">
+        <label for="apFabric">Fabric</label>
+        <select id="apFabric">
+          <option value="" disabled selected>Select fabric</option>
+          <option>Organic Cotton</option><option>Recycled Cotton</option><option>Hemp</option>
+          <option>Linen Blend</option><option>Recycled Polyester</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field" id="gsmField" hidden>
+        <label for="apGsm">Fabric weight (GSM)</label>
+        <select id="apGsm">
+          <option value="" disabled selected>Select GSM</option>
+          <option>160 GSM</option><option>180 GSM</option><option>200 GSM</option>
+          <option>220 GSM</option><option>240 GSM</option><option value="Custom">Custom</option>
+        </select>
+        <input id="apGsmCustom" class="input" type="number" placeholder="Enter custom GSM" hidden>
+      </div>
+    </div>
+
+    <div id="pMerch" hidden>
+      <div class="field">
+        <label>Product type</label>
+        <div class="chips" id="mcCat">
+          <button class="chip" data-mc="Bottles">Bottles</button>
+          <button class="chip" data-mc="Mugs">Mugs</button>
+          <button class="chip" data-mc="Bags">Bags</button>
+          <button class="chip" data-mc="Stationery">Stationery</button>
+          <button class="chip" data-mc="Other">Other</button>
+        </div>
+      </div>
+      <div id="mcDynamic"></div>
+    </div>
+
+    <div class="field">
+      <label>Colour</label>
+      <div class="swatches" id="colors"></div>
+      <label class="checkline"><input type="checkbox" id="customColorOn"><span>Request a custom colour</span></label>
+      <input id="customColorText" class="input" placeholder="Describe the colour you have in mind" hidden>
+    </div>
+
+    <div class="field" id="sizeField" hidden>
+      <label>Available sizes <span class="helper-inline">select all you might need</span></label>
+      <div class="chips" id="sizes"></div>
+    </div>
+
+    <p class="error" id="productError" hidden>Please complete the fields above to continue.</p>
+    <div class="actions"><button class="btn btn-primary" data-go="customise">Continue to Customisation</button></div>
+  </section>
+
+  <!-- 3 · Customise -->
+  <section class="screen" id="s-customise">
+    <h1 class="h1">Customise your product</h1>
+    <p class="lede">Choose how your brand will appear.</p>
+
+    <div class="field">
+      <label>Branding method</label>
+      <div class="chips" id="methods"></div>
+    </div>
+    <div class="field">
+      <label>Placement</label>
+      <div class="chips" id="placements"></div>
+    </div>
+    <div class="field">
+      <label for="custNotes">Anything else we should know?</label>
+      <textarea id="custNotes" class="input" rows="3" placeholder="Any special branding or packaging requirements?"></textarea>
+    </div>
+
+    <p class="error" id="custError" hidden>Please pick a branding method and a placement.</p>
+    <div class="actions">
+      <button class="btn btn-primary" data-go="artwork">Continue to Artwork</button>
+      <button class="btn-link" data-go="product">Back</button>
+    </div>
+  </section>
+
+  <!-- 4 · Artwork -->
+  <section class="screen" id="s-artwork">
+    <h1 class="h1">Upload your artwork</h1>
+    <p class="lede">Upload your logo or share a Canva design link. Our team will review it before confirming production details.</p>
+
+    <div class="field">
+      <label>Upload logo or artwork</label>
+      <div class="dropzone" id="dropzone" role="button" tabindex="0">
+        <b>Tap to choose a file</b>
+        <span>PDF · PNG · SVG · AI</span>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf,.png,.svg,.ai" hidden>
+      <div class="file-row" id="fileRow" hidden>
+        <span class="file-row__badge" id="fileBadge">PDF</span>
+        <span class="file-row__info"><b id="fileName"></b><i id="fileMeta"></i></span>
+        <span class="file-row__actions"><button id="fileReplace">Replace</button><button id="fileRemove" class="danger">Remove</button></span>
+      </div>
+      <p class="error" id="fileError" hidden>That file type isn't supported. Please upload a PDF, PNG, SVG or AI file.</p>
+    </div>
+
+    <div class="or">or</div>
+
+    <div class="field">
+      <label for="canvaLink">Paste a Canva design link</label>
+      <input id="canvaLink" class="input" type="url" inputmode="url" placeholder="canva.com/design/…">
+    </div>
+    <button class="btn-link" id="shareLater">I'll share my artwork with the team later</button>
+
+    <div class="actions">
+      <button class="btn btn-primary" data-go="quantity">Continue to Quantity</button>
+      <button class="btn-link" data-go="customise">Back</button>
+    </div>
+    <p class="error" id="artError" hidden>Upload a file, paste a Canva link, or choose to share it later.</p>
+  </section>
+
+  <!-- 5 · Quantity -->
+  <section class="screen" id="s-quantity">
+    <h1 class="h1">How many units do you need?</h1>
+    <p class="lede">Minimum order: 50 units.</p>
+
+    <div id="qSizes" hidden>
+      <div class="qty-rows" id="qtyRows"></div>
+      <p class="qty-total">Total quantity: <b id="qtyTotal">0</b> units</p>
+    </div>
+
+    <div id="qSimple" hidden class="field">
+      <label for="simpleInput">Quantity</label>
+      <div class="stepper">
+        <button class="step-btn" data-s="-">−</button>
+        <input id="simpleInput" type="number" inputmode="numeric" min="0" value="0">
+        <button class="step-btn" data-s="+">+</button>
+      </div>
+    </div>
+
+    <p class="error" id="qtyError" hidden>Please enter a total quantity of at least 50 units.</p>
+    <div class="actions">
+      <button class="btn btn-primary" id="qtyCta" data-go="quote" disabled>Continue to Quotation</button>
+      <button class="btn-link" data-go="artwork">Back</button>
+    </div>
+  </section>
+
+  <!-- 6 · Estimated Quote -->
+  <section class="screen" id="s-quote">
+    <h1 class="h1">Your estimated quote</h1>
+    <p class="lede">Review the estimated cost for your selected product and quantity.</p>
+
+    <div class="card quote-card">
+      <div class="quote-card__head">
+        <img src="assets/product-tee.png" alt="" id="quoteImg">
+        <div><b id="qName"></b><span id="qSpecs"></span></div>
+      </div>
+      <div class="quote-card__rows" id="qRows"></div>
+      <div class="quote-card__total"><span>Estimated total</span><b id="qTotal"></b></div>
+    </div>
+
+    <p class="note">Final pricing will be confirmed by the Renivet team after reviewing your artwork, specifications and delivery requirements. Prices shown are illustrative prototype data.</p>
+
+    <div class="actions">
+      <button class="btn btn-primary" data-go="details">Continue to Company Details</button>
+      <button class="btn-link" data-go="product">Edit product</button>
+    </div>
+  </section>
+
+  <!-- 7 · Company Details -->
+  <section class="screen" id="s-details">
+    <h1 class="h1">Company details</h1>
+    <p class="lede">Tell us where to send your quotation and order updates.</p>
+
+    <h2 class="h2">Company</h2>
+    <div class="field"><label for="coName">Company name</label><input id="coName" class="input" data-req autocomplete="organization"></div>
+    <div class="field"><label for="coPerson">Contact person</label><input id="coPerson" class="input" data-req></div>
+    <div class="field"><label for="coDesig">Designation <span class="helper-inline">optional</span></label><input id="coDesig" class="input"></div>
+
+    <h2 class="h2">Contact</h2>
+    <div class="field"><label for="coEmail">Business email</label><input id="coEmail" class="input" type="email" data-req autocomplete="email"></div>
+    <div class="field"><label for="coPhone">Phone number</label><input id="coPhone" class="input" type="tel" data-req autocomplete="tel"></div>
+
+    <h2 class="h2">GST</h2>
+    <div class="field"><label for="coGst">GST number <span class="helper-inline">optional</span></label><input id="coGst" class="input"></div>
+
+    <h2 class="h2">Billing address</h2>
+    <div class="field"><label for="billLine">Address</label><input id="billLine" class="input" data-req autocomplete="street-address"></div>
+    <div class="field-row">
+      <div class="field"><label for="billCity">City</label><input id="billCity" class="input" data-req></div>
+      <div class="field"><label for="billState">State</label><input id="billState" class="input" data-req></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label for="billPin">PIN code</label><input id="billPin" class="input" inputmode="numeric" data-req></div>
+      <div class="field"><label for="billCountry">Country</label><input id="billCountry" class="input" value="India"></div>
+    </div>
+
+    <label class="checkline"><input type="checkbox" id="sameAddr" checked><span>Shipping address is the same as billing address</span></label>
+    <div id="shipFields" hidden>
+      <h2 class="h2">Shipping address</h2>
+      <div class="field"><label for="shipLine">Address</label><input id="shipLine" class="input"></div>
+      <div class="field-row">
+        <div class="field"><label for="shipCity">City</label><input id="shipCity" class="input"></div>
+        <div class="field"><label for="shipState">State</label><input id="shipState" class="input"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="shipPin">PIN code</label><input id="shipPin" class="input" inputmode="numeric"></div>
+        <div class="field"><label for="shipCountry">Country</label><input id="shipCountry" class="input" value="India"></div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:24px"><label for="coNotes">Additional notes <span class="helper-inline">optional</span></label><textarea id="coNotes" class="input" rows="3" placeholder="Anything else our team should know?"></textarea></div>
+
+    <p class="error" id="detailsError" hidden>Please fill in the highlighted fields.</p>
+    <div class="actions"><button class="btn btn-primary" data-go="review">Review Order</button></div>
+  </section>
+
+  <!-- 8 · Review -->
+  <section class="screen" id="s-review">
+    <h1 class="h1">Review your order</h1>
+    <p class="lede">Check everything looks right before submitting.</p>
+    <div id="reviewBlocks"></div>
+    <p class="note">Your final quotation and payment terms will be confirmed by the Renivet team.</p>
+    <div class="actions">
+      <button class="btn btn-primary" id="submitReq">Submit Order Request</button>
+      <button class="btn-link" data-go="details">Back</button>
+    </div>
+  </section>
+
+  <!-- 9 · Request submitted -->
+  <section class="screen" id="s-requested">
+    <div class="seal" aria-hidden="true">✓</div>
+    <h1 class="h1 h1--center">Your corporate order request is submitted</h1>
+    <p class="lede lede--center">Thank you. Our team will review your requirements and artwork and contact you with the final quotation.</p>
+
+    <div class="card req-card">
+      <div class="req-row"><span>Request ID</span><b>REN-COR-REQ-10284</b></div>
+      <div class="req-row"><span>Product</span><b id="rqProduct"></b></div>
+      <div class="req-row"><span>Total quantity</span><b id="rqQty"></b></div>
+      <div class="req-row"><span>Status</span><b class="pill">Awaiting quotation</b></div>
+    </div>
+
+    <h2 class="h2">What happens next</h2>
+    <ol class="next-steps">
+      <li>Artwork and specification review</li>
+      <li>Final quotation confirmation</li>
+      <li>Advance payment and order confirmation</li>
+      <li>Production and delivery coordination</li>
+    </ol>
+
+    <div class="actions">
+      <button class="btn btn-primary" data-go="payment">Preview final quotation &amp; payment</button>
+      <button class="btn-link" data-go="landing">Back to Renivet</button>
+    </div>
+    <p class="fineprint center">Prototype demo — in production, the Renivet team approves the final quotation before this stage opens.</p>
+  </section>
+
+  <!-- 10 · Final quotation + payment -->
+  <section class="screen" id="s-payment">
+    <span class="sim-badge">Prototype — simulated payment</span>
+    <h1 class="h1">Your final quotation</h1>
+    <p class="lede">Confirmed by the Renivet team after reviewing your requirements.</p>
+
+    <div class="card">
+      <div class="req-row"><span>Approved product</span><b id="fpProduct"></b></div>
+      <div class="req-row"><span>Quantity</span><b id="fpQty"></b></div>
+      <div class="req-row"><span>Delivery timeline</span><b>To be confirmed</b></div>
+      <div class="quote-card__rows" id="fpRows" style="margin-top:12px"></div>
+      <div class="quote-card__total"><span>Confirmed order total</span><b id="fpTotal"></b></div>
+    </div>
+
+    <h2 class="h2">Payment terms</h2>
+    <div class="terms">
+      <div class="terms__col"><b>50% Advance</b><span>Payable to confirm the order</span><i id="fpAdvance"></i></div>
+      <div class="terms__col"><b>50% Balance</b><span>Payable after receiving the order, as per agreed terms</span><i id="fpBalance"></i></div>
+    </div>
+
+    <h2 class="h2">Pay advance with</h2>
+    <div class="pay-methods" id="payMethods">
+      <label class="pay-opt"><input type="radio" name="pm" value="UPI" checked><span><b>UPI</b><i>Google Pay · PhonePe · Paytm</i></span></label>
+      <label class="pay-opt"><input type="radio" name="pm" value="Card"><span><b>Credit / Debit Card</b><i>Visa · Mastercard · RuPay</i></span></label>
+      <label class="pay-opt"><input type="radio" name="pm" value="NetBanking"><span><b>Net Banking</b><i>All major Indian banks</i></span></label>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="payCta">Pay 50% Advance</button>
+      <button class="btn-link" data-go="requested">Back</button>
+    </div>
+  </section>
+
+  <!-- 11 · Order confirmed -->
+  <section class="screen" id="s-confirmed">
+    <div class="seal seal--green" aria-hidden="true">✓</div>
+    <h1 class="h1 h1--center">Your corporate order is confirmed</h1>
+    <p class="lede lede--center">Your advance payment has been recorded in this prototype. Renivet's team will coordinate the next steps with you.</p>
+
+    <div class="card req-card">
+      <div class="req-row"><span>Order ID</span><b>REN-COR-10284</b></div>
+      <div class="req-row"><span>Product</span><b id="cfProduct"></b></div>
+      <div class="req-row"><span>Quantity</span><b id="cfQty"></b></div>
+      <div class="req-row"><span>Advance paid</span><b class="green" id="cfPaid"></b></div>
+      <div class="req-row"><span>Remaining balance</span><b id="cfBalance"></b></div>
+      <div class="req-row"><span>Delivery timeline</span><b>To be confirmed</b></div>
+    </div>
+
+    <p class="flow-line">Artwork approval <span>→</span> Production <span>→</span> Delivery</p>
+
+    <div class="actions"><button class="btn btn-primary" data-go="landing">Back to Renivet</button></div>
+  </section>
+
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="overlay__card"><div class="spinner"></div><p>Processing simulated payment…</p></div>
+</div>
+<p class="toast" id="toast" hidden></p>
+
+<script src="mobile.js"></script>
+</body>
+</html>
