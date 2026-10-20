@@ -20,14 +20,9 @@
 </header>
 
 <div class="stepbar" id="stepbar" hidden>
-  <div class="stepbar__row"><span id="stepLabel">Step 1 of 7</span><b id="stepName">Product</b></div>
+  <div class="stepbar__row"><span id="stepLabel">Step 01 of 07</span><b id="stepName">Product</b><i id="stepNext"></i></div>
   <div class="stepbar__rail"><i id="stepFill"></i></div>
 </div>
-
-<details class="mini-summary" id="miniSummary" hidden>
-  <summary><span id="miniLine">No product selected yet</span><span class="mini-summary__chev"></span></summary>
-  <dl id="miniRows"></dl>
-</details>
 
 <main>
 
@@ -38,177 +33,191 @@
 
     <p class="question">What are you looking to order?</p>
 
-    <button class="cat-card" data-go="product" data-cat="apparel">
-      <img src="assets/apparel-card.png" alt="Folded organic cotton t-shirts, hoodies and jackets">
-      <span class="cat-card__body">
-        <b>Apparel</b>
-        <span>T-shirts, hoodies and jackets.</span>
-        <i>Explore Apparel →</i>
-      </span>
-    </button>
+    <div class="cat-grid">
+      <button class="cat-card" data-go="product" data-cat="apparel">
+        <img src="assets/apparel-card.png" alt="Folded organic cotton t-shirts, hoodies and jackets">
+        <span class="cat-card__body">
+          <b>Apparel</b>
+          <span>T-shirts, hoodies and jackets.</span>
+          <i>Explore →</i>
+        </span>
+      </button>
 
-    <button class="cat-card" data-go="product" data-cat="merch">
-      <img src="assets/merch-card.png" alt="Steel bottle, ceramic mug and canvas tote">
-      <span class="cat-card__body">
-        <b>Non-Apparel</b>
-        <span>Bottles, mugs, bags and stationery.</span>
-        <i>Explore Merchandise →</i>
-      </span>
-    </button>
+      <button class="cat-card" data-go="product" data-cat="merch">
+        <img src="assets/merch-card.png" alt="Steel bottle, ceramic mug and canvas tote">
+        <span class="cat-card__body">
+          <b>Non-Apparel</b>
+          <span>Bottles, mugs, bags and stationery.</span>
+          <i>Explore →</i>
+        </span>
+      </button>
+    </div>
 
     <p class="fineprint">Corporate orders start at 50 units. Prices shown are estimates until confirmed by our team.</p>
   </section>
 
   <!-- 2 · Product Details -->
   <section class="screen" id="s-product">
-    <h1 class="h1">Choose your product</h1>
-    <p class="lede" id="productLede">Tell us what you'd like to create.</p>
+    <p class="eyebrow">Your collection, your way</p>
+    <h1 class="h1">Let&rsquo;s create something yours.</h1>
+    <p class="lede" id="productLede">Choose your product, fabric and fit. We&rsquo;ll help you bring your custom collection to life.</p>
 
-    <div id="pApparel" hidden>
-      <div class="field">
-        <label for="apType">Product type</label>
-        <select id="apType">
-          <option value="" disabled selected>Select a product</option>
-          <option>T-Shirt</option><option>Hoodie</option><option>Jacket</option>
-          <option>Polo</option><option>Sweatshirt</option><option>Other</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Style</label>
-        <div class="chips" id="apStyles"></div>
-      </div>
-      <div class="field">
-        <label for="apFabric">Fabric</label>
-        <select id="apFabric">
-          <option value="" disabled selected>Select fabric</option>
-          <option>Organic Cotton</option><option>Recycled Cotton</option><option>Hemp</option>
-          <option>Linen Blend</option><option>Recycled Polyester</option><option>Other</option>
-        </select>
-      </div>
-      <div class="field" id="gsmField" hidden>
-        <label for="apGsm">Fabric weight (GSM)</label>
-        <select id="apGsm">
-          <option value="" disabled selected>Select GSM</option>
-          <option>160 GSM</option><option>180 GSM</option><option>200 GSM</option>
-          <option>220 GSM</option><option>240 GSM</option><option value="Custom">Custom</option>
-        </select>
-        <input id="apGsmCustom" class="input" type="number" placeholder="Enter custom GSM" hidden>
-      </div>
-    </div>
-
-    <div id="pMerch" hidden>
-      <div class="field">
-        <label>Product type</label>
-        <div class="chips" id="mcCat">
-          <button class="chip" data-mc="Bottles">Bottles</button>
-          <button class="chip" data-mc="Mugs">Mugs</button>
-          <button class="chip" data-mc="Bags">Bags</button>
-          <button class="chip" data-mc="Stationery">Stationery</button>
-          <button class="chip" data-mc="Other">Other</button>
+    <div class="p-grid">
+      <div class="p-form">
+        <div id="pApparel" hidden>
+          <div class="field">
+            <label for="apType">What are you creating?</label>
+            <select id="apType">
+              <option value="" disabled selected>Choose a product type</option>
+              <option>T-Shirt</option><option>Hoodie</option><option>Jacket</option>
+              <option>Polo</option><option>Sweatshirt</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Style</label>
+            <div class="chips" id="apStyles"></div>
+          </div>
+          <div class="field">
+            <label for="apFabric">Choose your fabric</label>
+            <select id="apFabric">
+              <option value="" disabled selected>Choose a fabric</option>
+              <option>Organic Cotton</option><option>Recycled Cotton</option><option>Hemp</option>
+              <option>Linen Blend</option><option>Recycled Polyester</option><option>Other</option>
+            </select>
+            <p class="field-note" id="fabricNote" hidden></p>
+          </div>
+          <div class="field" id="gsmField" hidden>
+            <label for="apGsm">Fabric weight</label>
+            <select id="apGsm">
+              <option value="" disabled selected>Select fabric weight</option>
+              <option>160 GSM</option><option>180 GSM</option><option>200 GSM</option>
+              <option>220 GSM</option><option>240 GSM</option><option value="Custom">Custom</option>
+            </select>
+            <p class="field-note" id="gsmNote" hidden></p>
+            <input id="apGsmCustom" class="input" type="number" placeholder="Enter custom GSM" hidden>
+          </div>
         </div>
+
+        <div id="pMerch" hidden>
+          <div class="field">
+            <label>What are you creating?</label>
+            <div class="chips" id="mcCat">
+              <button class="chip" data-mc="Bottles">Bottles</button>
+              <button class="chip" data-mc="Mugs">Mugs</button>
+              <button class="chip" data-mc="Bags">Bags</button>
+              <button class="chip" data-mc="Stationery">Stationery</button>
+              <button class="chip" data-mc="Other">Other</button>
+            </div>
+          </div>
+          <div id="mcDynamic"></div>
+        </div>
+
+        <div class="field" id="sizeField" hidden>
+          <label>Available sizes <span class="helper-inline">Pick every size you&rsquo;ll need — unit quantities come later.</span></label>
+          <div class="chips" id="sizes"></div>
+        </div>
+
+        <p class="error" id="productError" hidden></p>
       </div>
-      <div id="mcDynamic"></div>
+
+      <aside class="p-preview" aria-live="polite">
+        <figure>
+          <img id="previewImg" src="assets/product-tee.png" alt="Live preview of your product">
+          <figcaption>
+            <b id="previewName">Your product</b>
+            <span id="previewSpecs">Make your first selections and they&rsquo;ll appear here.</span>
+          </figcaption>
+        </figure>
+        <p class="p-preview__note">Preview updates as you choose</p>
+      </aside>
     </div>
 
-    <div class="field">
-      <label>Colour</label>
-      <div class="swatches" id="colors"></div>
-      <label class="checkline"><input type="checkbox" id="customColorOn"><span>Request a custom colour</span></label>
-      <input id="customColorText" class="input" placeholder="Describe the colour you have in mind" hidden>
-    </div>
-
-    <div class="field" id="sizeField" hidden>
-      <label>Available sizes <span class="helper-inline">select all you might need</span></label>
-      <div class="chips" id="sizes"></div>
-    </div>
-
-    <p class="error" id="productError" hidden>Please complete the fields above to continue.</p>
-    <div class="actions"><button class="btn btn-primary" data-go="customise">Continue to Customisation</button></div>
+    <div class="actions"><button class="btn btn-primary" data-go="customise">Next&thinsp;&rarr;</button></div>
   </section>
 
   <!-- 3 · Customise -->
   <section class="screen" id="s-customise">
+    <p class="eyebrow">Print &amp; artwork</p>
     <h1 class="h1">Customise your product</h1>
-    <p class="lede">Choose how your brand will appear.</p>
+    <p class="lede">Choose your print colour and placement, then share your artwork.</p>
 
     <div class="field">
-      <label>Branding method</label>
-      <div class="chips" id="methods"></div>
+      <label>Print colour <span class="helper-inline">Need a specific shade? Request a custom colour.</span></label>
+      <div class="swatches" id="colors"></div>
+      <label class="checkline custom-row"><input type="checkbox" id="customColorOn"><span>Request a custom colour</span></label>
+      <div id="customColorWrap" hidden>
+        <input id="customColorText" class="input" placeholder="e.g. muted olive green or a specific Pantone code">
+        <p class="field-note" style="margin-top:8px">Our team may ask to confirm the final shade before production.</p>
+      </div>
     </div>
+
     <div class="field">
-      <label>Placement</label>
+      <label>Print placement <span class="helper-inline">Choose where the print goes</span></label>
       <div class="chips" id="placements"></div>
     </div>
-    <div class="field">
-      <label for="custNotes">Anything else we should know?</label>
-      <textarea id="custNotes" class="input" rows="3" placeholder="Any special branding or packaging requirements?"></textarea>
-    </div>
-
-    <p class="error" id="custError" hidden>Please pick a branding method and a placement.</p>
-    <div class="actions">
-      <button class="btn btn-primary" data-go="artwork">Continue to Artwork</button>
-      <button class="btn-link" data-go="product">Back</button>
-    </div>
-  </section>
-
-  <!-- 4 · Artwork -->
-  <section class="screen" id="s-artwork">
-    <h1 class="h1">Upload your artwork</h1>
-    <p class="lede">Upload your logo or share a Canva design link. Our team will review it before confirming production details.</p>
 
     <div class="field">
-      <label>Upload logo or artwork</label>
+      <label>Upload your artwork</label>
       <div class="dropzone" id="dropzone" role="button" tabindex="0">
-        <b>Tap to choose a file</b>
-        <span>PDF · PNG · SVG · AI</span>
+        <b>Tap to choose your logo or design file</b>
+        <span>PDF · PNG · JPG · SVG · AI · PSD · CDR — any format works</span>
       </div>
-      <input type="file" id="fileInput" accept=".pdf,.png,.svg,.ai" hidden>
+      <input type="file" id="fileInput" hidden>
       <div class="file-row" id="fileRow" hidden>
         <span class="file-row__badge" id="fileBadge">PDF</span>
         <span class="file-row__info"><b id="fileName"></b><i id="fileMeta"></i></span>
         <span class="file-row__actions"><button id="fileReplace">Replace</button><button id="fileRemove" class="danger">Remove</button></span>
       </div>
       <p class="error" id="fileError" hidden>That file type isn't supported. Please upload a PDF, PNG, SVG or AI file.</p>
+      <div class="or">or</div>
+      <label for="canvaLink" style="font-size:15px;font-weight:600">Paste a Canva design link</label>
+      <input id="canvaLink" class="input" type="url" inputmode="url" placeholder="canva.com/design/…">
+      <button class="btn-link" id="shareLater">I'll share my artwork with the team later</button>
+    </div>
+
+    <div class="field">
+      <label for="custNotes">Anything else we should know?</label>
+      <textarea id="custNotes" class="input" rows="3" placeholder="Any special branding or packaging requirements?"></textarea>
+    </div>
+
+    <p class="error" id="custError" hidden></p>
+    <div class="actions">
+      <button class="btn btn-primary" data-go="quantity">Next&thinsp;&rarr;</button>
+      <button class="btn-link" data-go="product">Back</button>
+    </div>
+  </section>
+
+  <!-- 4 · Quantity -->
+  <section class="screen" id="s-quantity">
+    <h1 class="h1">How many units do you need?</h1>
+    <p class="lede">Minimum order: 50 units.</p>
+
+    <div class="field excel-upload">
+      <button class="btn-upload" id="excelBtn">Upload quantity &amp; size breakup</button>
+      <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" hidden>
+      <p class="field-note" id="excelNote">Add your size-wise quantities and total units in an Excel or CSV sheet &mdash; we&rsquo;ll read the total straight from your file.</p>
+      <div class="sheet-chip" id="sheetChip" hidden>
+        <b id="sheetName"></b>
+        <span id="sheetSummary"></span>
+      </div>
     </div>
 
     <div class="or">or</div>
 
     <div class="field">
-      <label for="canvaLink">Paste a Canva design link</label>
-      <input id="canvaLink" class="input" type="url" inputmode="url" placeholder="canva.com/design/…">
-    </div>
-    <button class="btn-link" id="shareLater">I'll share my artwork with the team later</button>
-
-    <div class="actions">
-      <button class="btn btn-primary" data-go="quantity">Continue to Quantity</button>
-      <button class="btn-link" data-go="customise">Back</button>
-    </div>
-    <p class="error" id="artError" hidden>Upload a file, paste a Canva link, or choose to share it later.</p>
-  </section>
-
-  <!-- 5 · Quantity -->
-  <section class="screen" id="s-quantity">
-    <h1 class="h1">How many units do you need?</h1>
-    <p class="lede">Minimum order: 50 units.</p>
-
-    <div id="qSizes" hidden>
-      <div class="qty-rows" id="qtyRows"></div>
-      <p class="qty-total">Total quantity: <b id="qtyTotal">0</b> units</p>
-    </div>
-
-    <div id="qSimple" hidden class="field">
-      <label for="simpleInput">Quantity</label>
+      <label for="simpleInput">Total quantity</label>
       <div class="stepper">
         <button class="step-btn" data-s="-">−</button>
         <input id="simpleInput" type="number" inputmode="numeric" min="0" value="0">
         <button class="step-btn" data-s="+">+</button>
       </div>
+      <p class="field-note">Don&rsquo;t have a sheet yet? Type the total — you can share the size breakup later.</p>
     </div>
 
     <p class="error" id="qtyError" hidden>Please enter a total quantity of at least 50 units.</p>
     <div class="actions">
-      <button class="btn btn-primary" id="qtyCta" data-go="quote" disabled>Continue to Quotation</button>
-      <button class="btn-link" data-go="artwork">Back</button>
+      <button class="btn btn-primary" id="qtyCta" data-go="details" disabled>Next&thinsp;&rarr;</button>
+      <button class="btn-link" data-go="customise">Back</button>
     </div>
   </section>
 
@@ -229,15 +238,22 @@
     <p class="note">Final pricing will be confirmed by the Renivet team after reviewing your artwork, specifications and delivery requirements. Prices shown are illustrative prototype data.</p>
 
     <div class="actions">
-      <button class="btn btn-primary" data-go="details">Continue to Company Details</button>
+      <button class="btn btn-primary" data-go="review">Next&thinsp;&rarr;</button>
       <button class="btn-link" data-go="product">Edit product</button>
     </div>
   </section>
 
-  <!-- 7 · Company Details -->
+  <!-- 7 · Delivery + Company Details -->
   <section class="screen" id="s-details">
-    <h1 class="h1">Company details</h1>
-    <p class="lede">Tell us where to send your quotation and order updates.</p>
+    <h1 class="h1">Delivery details</h1>
+    <p class="lede">When do you need it, and where should we send the quotation?</p>
+
+    <h2 class="h2">Delivery</h2>
+    <div class="field">
+      <label for="delDate">Required delivery date</label>
+      <input id="delDate" class="input" type="date" data-req>
+      <p class="field-note">We&rsquo;ll confirm feasibility against production time after reviewing your order.</p>
+    </div>
 
     <h2 class="h2">Company</h2>
     <div class="field"><label for="coName">Company name</label><input id="coName" class="input" data-req autocomplete="organization"></div>
@@ -279,7 +295,7 @@
     <div class="field" style="margin-top:24px"><label for="coNotes">Additional notes <span class="helper-inline">optional</span></label><textarea id="coNotes" class="input" rows="3" placeholder="Anything else our team should know?"></textarea></div>
 
     <p class="error" id="detailsError" hidden>Please fill in the highlighted fields.</p>
-    <div class="actions"><button class="btn btn-primary" data-go="review">Review Order</button></div>
+    <div class="actions"><button class="btn btn-primary" data-go="quote">Continue for quotation&thinsp;&rarr;</button></div>
   </section>
 
   <!-- 8 · Review -->
@@ -349,6 +365,13 @@
       <label class="pay-opt"><input type="radio" name="pm" value="NetBanking"><span><b>Net Banking</b><i>All major Indian banks</i></span></label>
     </div>
 
+    <div class="card help-card">
+      <b>Need help with your order or payment?</b>
+      <span>Our order desk can walk you through the quotation, GST invoice and payment options.</span>
+      <div class="help-row"><a href="tel:+919845000000">+91 98450 00000</a><i>Mon–Sat · 10am–7pm</i></div>
+      <div class="help-row"><a href="mailto:orders@renivet.in">orders@renivet.in</a></div>
+    </div>
+
     <div class="actions">
       <button class="btn btn-primary" id="payCta">Pay 50% Advance</button>
       <button class="btn-link" data-go="requested">Back</button>
@@ -365,9 +388,16 @@
       <div class="req-row"><span>Order ID</span><b>REN-COR-10284</b></div>
       <div class="req-row"><span>Product</span><b id="cfProduct"></b></div>
       <div class="req-row"><span>Quantity</span><b id="cfQty"></b></div>
+      <div class="req-row"><span>Required delivery</span><b id="cfDate"></b></div>
       <div class="req-row"><span>Advance paid</span><b class="green" id="cfPaid"></b></div>
       <div class="req-row"><span>Remaining balance</span><b id="cfBalance"></b></div>
-      <div class="req-row"><span>Delivery timeline</span><b>To be confirmed</b></div>
+    </div>
+
+    <h2 class="h2">Your contact</h2>
+    <div class="card">
+      <div class="req-row"><span>Name</span><b id="cfContact"></b></div>
+      <div class="req-row"><span>Email</span><b id="cfEmail"></b></div>
+      <div class="req-row"><span>Phone</span><b id="cfPhone"></b></div>
     </div>
 
     <p class="flow-line">Artwork approval <span>→</span> Production <span>→</span> Delivery</p>

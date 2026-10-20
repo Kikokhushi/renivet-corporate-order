@@ -10,19 +10,35 @@ const state = {
   merch:{ category:'', fields:{} },
   colour:'', customColour:'',
   sizes:[],
-  methods:[], placements:[], notes:'',
+  placements:[], notes:'',
   artwork:{ file:null, canva:'', later:false },
-  qty:{ sizes:{}, simple:0 },
+  qty:{ total:0, sheet:null },
   pay:{ method:'UPI' }
 };
 window.state = state;
 
-const STEPS = ['Product','Customise','Artwork','Quantity','Quote','Details','Review'];
-const SCREEN_STEP = { product:0, customise:1, artwork:2, quantity:3, quote:4, details:5, review:6 };
-const BACK = { product:'landing', customise:'product', artwork:'customise', quantity:'artwork', quote:'quantity', details:'quote', review:'details', requested:'review', payment:'requested', confirmed:'landing', landing:null };
+const STEPS = ['Product','Customise','Quantity','Delivery','Quotation'];
+const SCREEN_STEP = { product:0, customise:1, quantity:2, details:3, quote:4, review:4, requested:4, payment:4, confirmed:4 };
+const BACK = { product:'landing', customise:'product', quantity:'customise', details:'quantity', quote:'details', review:'quote', requested:'review', payment:'requested', confirmed:'landing', landing:null };
 
 const STYLES = { 'T-Shirt':['Round Neck','Crew Neck','Oversized','Regular Fit'], 'Hoodie':['Pullover','Zip Hoodie','Oversized'], 'Jacket':['Zip Jacket','Bomber','Coach Jacket'], 'Polo':['Classic Polo','Oversized Polo'], 'Sweatshirt':['Crew Neck','Hooded','Oversized'], 'Other':['Regular Fit','Oversized','Custom'] };
 const NO_GSM = new Set(['Other']);
+const FABRIC_NOTES = {
+  'Organic Cotton':'Soft, breathable natural fibre — our most ordered base.',
+  'Recycled Cotton':'Repurposed cotton fibres with a classic handfeel.',
+  'Hemp':'Strong, quick-drying and gets softer with every wash.',
+  'Linen Blend':'Light and airy — good for summer uniforms.',
+  'Recycled Polyester':'Durable with sharp print definition.',
+  'Other':'Tell us what you have in mind and our team will match it.'
+};
+const GSM_NOTES = {
+  '160 GSM':'160 GSM · Lightweight — warm-weather tees.',
+  '180 GSM':'180 GSM · Everyday weight — balanced drape.',
+  '200 GSM':'200 GSM · Mid-weight — fuller, less sheer.',
+  '220 GSM':'220 GSM · Dense — sweatshirts and structured tees.',
+  '240 GSM':'240 GSM · Heavyweight — premium, winter-ready feel.',
+  'Custom':'Custom weight — our team will confirm feasibility.'
+};
 const COLORS = [ {n:'Black',h:'#262626'},{n:'Forest Green',h:'#3A5440'},{n:'Sand',h:'#D8C6A0'},{n:'Off-White',h:'#F2ECDD'},{n:'Indigo',h:'#3A4266'},{n:'Terracotta',h:'#B0603C'} ];
 const MC_FIELDS = {
   Bottles:[{k:'material',l:'Material',o:['Stainless Steel','Recycled Plastic','Glass','Other']},{k:'capacity',l:'Capacity',o:['500 ml','750 ml','1 L','Custom']}],
@@ -31,8 +47,8 @@ const MC_FIELDS = {
   Stationery:[{k:'item',l:'Item',o:['Notebook','Journal','Pen Set','Cards','Custom']},{k:'paper',l:'Paper',o:['Recycled Kraft','Cotton','Linen','Other']}],
   Other:[{k:'item',l:'What is the product?',text:true}]
 };
-const METHODS = { apparel:['Screen printing','Digital printing','Embroidery','Other'], merch:['Printing','Engraving','Embossing','Other'] };
-const PLACES = { apparel:['Front','Back','Left chest','Sleeve','Other'], merch:['Front','Back','Side','Lid','Other'] };
+const PLACES = { apparel:['Front','Back','Left chest','Sleeve'], merch:['Front','Back','Side'] };
+const PRINT_UNIT = 60;
 const UNITS = {
   apparel:{ 'Organic Cotton':600,'Recycled Cotton':550,'Hemp':700,'Linen Blend':750,'Recycled Polyester':650,'Other':600 },
   Bottles:{ 'Stainless Steel':450,'Recycled Plastic':250,'Glass':350,'Other':300 },
@@ -41,7 +57,6 @@ const UNITS = {
   Stationery:{ 'Recycled Kraft':180,'Cotton':240,'Linen':220,'Other':180 },
   Other:{ 'Other':300 }
 };
-const BRAND_UNIT = { 'Screen printing':60,'Printing':60,'Digital printing':70,'Embroidery':120,'Embossing':90,'Engraving':100,'Other':80 };
 
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.hidden=false; requestAnimationFrame(()=>t.classList.add('show')); clearTimeout(t._h); t._h=setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.hidden=true,350); },2400); }
 
@@ -75,7 +90,9 @@ function renderProduct(){
   const apparel = state.cat==='apparel';
   $('#pApparel').hidden=!apparel; $('#pMerch').hidden=apparel;
   $('#sizeField').hidden=!apparel;
-  $('#productLede').textContent = apparel ? 'Tell us what you’d like to create.' : 'Select the product you want to customise.';
+  $('#productLede').textContent = apparel
+    ? 'Choose your product, fabric and fit. We’ll help you bring your custom collection to life.'
+    : 'Select the product you want to customise.';
   if (apparel){
     $('#gsmField').hidden = NO_GSM.has($('#apType').value);
     if (!$('#sizes').children.length)
@@ -86,30 +103,47 @@ function renderProduct(){
     });
     if (state.merch.category) renderMcFields(state.merch.category);
   }
-  if (!$('#colors').children.length){
-    COLORS.forEach(c=>{
-      const b=document.createElement('button'); b.type='button'; b.className='swatch';
-      b.innerHTML=`<i style="background:${c.h}"></i><span>${c.n}</span>`;
-      b.addEventListener('click',()=>{
-        $$('#colors .swatch').forEach(s=>s.classList.remove('is-selected'));
-        b.classList.add('is-selected'); state.colour=c.n; $('#customColorOn').checked=false; $('#customColorText').hidden=true;
-      });
-      $('#colors').appendChild(b);
-    });
-  }
+  updatePreview();
 }
+$('#s-product').addEventListener('click',()=>setTimeout(updatePreview,0));
 function onPushRemove(arr,v,on){ if(on && !arr.includes(v)) arr.push(v); if(!on) arr=arr.filter(x=>x!==v); return arr; }
 
 $('#apType').addEventListener('change',e=>{
   state.apparel.type=e.target.value; state.apparel.style='';
   $('#gsmField').hidden = NO_GSM.has(e.target.value);
-  singleGroup($('#apStyles'), STYLES[e.target.value]||[], ()=>state.apparel.style, v=>state.apparel.style=v);
+  if (NO_GSM.has(e.target.value)) $('#gsmNote').hidden=true;
+  singleGroup($('#apStyles'), STYLES[e.target.value]||[], ()=>state.apparel.style, v=>{ state.apparel.style=v; updatePreview(); });
 });
-$('#apFabric').addEventListener('change',e=>state.apparel.fabric=e.target.value);
-$('#apGsm').addEventListener('change',e=>{ state.apparel.gsm=e.target.value; $('#apGsmCustom').hidden = e.target.value!=='Custom'; });
-$('#apGsmCustom').addEventListener('input',e=>state.apparel.gsmCustom=e.target.value);
-$('#customColorOn').addEventListener('change',e=>{ $('#customColorText').hidden=!e.target.checked; if(e.target.checked){ $$('#colors .swatch').forEach(s=>s.classList.remove('is-selected')); state.colour=''; } });
-$('#customColorText').addEventListener('input',e=>state.customColour=e.target.value.trim());
+$('#apFabric').addEventListener('change',e=>{
+  state.apparel.fabric=e.target.value;
+  const note=$('#fabricNote'); note.textContent=FABRIC_NOTES[e.target.value]||''; note.hidden=!e.target.value;
+  updatePreview();
+});
+$('#apGsm').addEventListener('change',e=>{
+  state.apparel.gsm=e.target.value; $('#apGsmCustom').hidden = e.target.value!=='Custom';
+  const note=$('#gsmNote'); note.textContent=GSM_NOTES[e.target.value]||''; note.hidden=!e.target.value;
+  updatePreview();
+});
+$('#apGsmCustom').addEventListener('input',e=>{ state.apparel.gsmCustom=e.target.value; updatePreview(); });
+$('#customColorOn').addEventListener('change',e=>{
+  $('#customColorWrap').hidden=!e.target.checked;
+  if(e.target.checked){ $$('#colors .swatch').forEach(s=>s.classList.remove('is-selected')); state.colour=''; }
+  updatePreview();
+});
+$('#customColorText').addEventListener('input',e=>{ state.customColour=e.target.value.trim(); updatePreview(); });
+$('#s-product').addEventListener('input',updatePreview);
+$('#s-product').addEventListener('change',updatePreview);
+
+function updatePreview(){
+  if (!$('#previewName')) return;
+  const apparel = state.cat==='apparel';
+  $('#previewImg').src = apparel ? 'assets/product-tee.png' : 'assets/merch-card.png';
+  const name = productName();
+  $('#previewName').textContent = name || (apparel ? 'Your product' : 'Your merchandise');
+  const bits = specBits();
+  $('#previewSpecs').textContent = bits.length ? bits.join(' · ') + (state.sizes.length?' · Sizes: '+state.sizes.join(', '):'')
+    : 'Make your first selections and they’ll appear here.';
+}
 
 function renderMcFields(cat){
   const wrap=$('#mcDynamic'); wrap.innerHTML='';
@@ -128,24 +162,43 @@ function renderMcFields(cat){
 }
 
 function validateProduct(){
-  const colourOk = state.colour || ($('#customColorOn').checked && state.customColour);
-  let ok;
+  const missing=[];
   if (state.cat==='apparel'){
     const a=state.apparel;
-    ok = a.type && a.style && a.fabric && (NO_GSM.has(a.type) || a.gsm) && colourOk && state.sizes.length;
+    if(!a.type) missing.push('product type');
+    if(!a.style) missing.push('style');
+    if(!a.fabric) missing.push('fabric');
+    if(!(NO_GSM.has(a.type) || a.gsm)) missing.push('fabric weight');
+    if(!state.sizes.length) missing.push('at least one size');
   } else {
-    const req = (MC_FIELDS[state.merch.category]||[]).filter(f=>!f.text).map(f=>f.k);
-    ok = state.merch.category && req.every(k=>state.merch.fields[k]) && colourOk;
+    const req=(MC_FIELDS[state.merch.category]||[]).filter(f=>!f.text);
+    if(!state.merch.category) missing.push('a product type');
+    req.forEach(f=>{ if(!state.merch.fields[f.k]) missing.push(f.l.toLowerCase()); });
   }
-  $('#productError').hidden=!!ok;
-  return !!ok;
+  const ok=!missing.length;
+  const err=$('#productError');
+  err.hidden=ok;
+  if(!ok) err.textContent='Still needed: '+missing.join(', ')+'.';
+  return ok;
 }
 
 /* ---------- customise ---------- */
 function renderCustomise(){
   const kind = state.cat==='apparel'?'apparel':'merch';
-  chipGroup($('#methods'), METHODS[kind], ()=>state.methods, (o,on)=>{ state.methods=onPushRemove(state.methods,o,on); });
+  if (!$('#colors').children.length){
+    COLORS.forEach(c=>{
+      const b=document.createElement('button'); b.type='button'; b.className='swatch';
+      b.innerHTML=`<i style="background:${c.h}"></i><span>${c.n}</span>`;
+      b.addEventListener('click',()=>{
+        $$('#colors .swatch').forEach(s=>s.classList.remove('is-selected'));
+        b.classList.add('is-selected'); state.colour=c.n; $('#customColorOn').checked=false; $('#customColorWrap').hidden=true;
+        updatePreview();
+      });
+      $('#colors').appendChild(b);
+    });
+  }
   chipGroup($('#placements'), PLACES[kind], ()=>state.placements, (o,on)=>{ state.placements=onPushRemove(state.placements,o,on); });
+  $('#custError').hidden=true;
 }
 $('#custNotes').addEventListener('input',e=>state.notes=e.target.value);
 
@@ -155,7 +208,6 @@ dz.addEventListener('click',()=>fi.click());
 dz.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fi.click(); } });
 fi.addEventListener('change',()=>{ if(fi.files[0]) setFile(fi.files[0]); });
 function setFile(f){
-  if(!/\.(pdf|png|svg|ai)$/i.test(f.name)){ $('#fileError').hidden=false; return; }
   $('#fileError').hidden=true;
   state.artwork.file={ name:f.name, size:f.size, type:f.name.split('.').pop().toUpperCase() };
   $('#fileName').textContent=f.name;
@@ -170,7 +222,7 @@ $('#canvaLink').addEventListener('input',e=>state.artwork.canva=e.target.value.t
 $('#shareLater').addEventListener('click',()=>{ state.artwork.later=true; toast('Noted — the team will follow up for your artwork.'); });
 
 /* ---------- pricing ---------- */
-function totalQty(){ return state.cat==='apparel' ? state.sizes.reduce((a,s)=>a+(+state.qty.sizes[s]||0),0) : state.qty.simple; }
+function totalQty(){ return state.qty.total; }
 function unitProduct(){
   if (state.cat==='apparel'){
     const a=state.apparel; let u=UNITS.apparel[a.fabric]||600;
@@ -184,8 +236,8 @@ function unitProduct(){
 }
 function price(){
   const q=totalQty(), product=unitProduct()*q;
-  const brandPer=state.methods.reduce((s,m)=>s+(BRAND_UNIT[m]||60),0);
-  const custom=brandPer*Math.max(1,state.placements.length)*q;
+  const brandPer=PRINT_UNIT*Math.max(1,state.placements.length);
+  const custom=brandPer*q;
   const shipping=q>200?5000:q>100?3500:q>50?2500:1500;
   const subtotal=product+custom+shipping, gst=Math.round(subtotal*.12);
   const total=subtotal+gst;
@@ -194,36 +246,28 @@ function price(){
 
 /* ---------- quantity ---------- */
 function renderQuantity(){
-  const apparel = state.cat==='apparel';
-  $('#qSizes').hidden=!apparel; $('#qSimple').hidden=apparel;
-  if (apparel){
-    const wrap=$('#qtyRows'); wrap.innerHTML='';
-    state.sizes.forEach(sz=>{
-      if (state.qty.sizes[sz]==null) state.qty.sizes[sz]=0;
-      const row=document.createElement('div'); row.className='qty-row';
-      row.innerHTML=`<b>${sz}</b><span class="stepper"><button class="step-btn" data-qsz="${sz}" data-d="-1">−</button><input type="number" inputmode="numeric" min="0" value="${state.qty.sizes[sz]}" data-qin="${sz}"><button class="step-btn" data-qsz="${sz}" data-d="1">+</button></span>`;
-      wrap.appendChild(row);
-    });
-  }
+  $('#simpleInput').value = state.qty.total || 0;
+  const chip=$('#sheetChip');
+  if (state.qty.sheet){ $('#sheetName').textContent=state.qty.sheet.name; $('#sheetSummary').textContent=state.qty.sheet.summary; chip.hidden=false; }
+  else chip.hidden=true;
   updateQty();
 }
-$('#qtyRows').addEventListener('click',e=>{
-  const b=e.target.closest('[data-qsz]'); if(!b) return;
-  const sz=b.dataset.qsz; state.qty.sizes[sz]=Math.max(0,(state.qty.sizes[sz]||0)+ +b.dataset.d);
-  $(`[data-qin="${sz}"]`).value=state.qty.sizes[sz]; updateQty();
-});
-$('#qtyRows').addEventListener('input',e=>{
-  const i=e.target.closest('[data-qin]'); if(!i) return;
-  state.qty.sizes[i.dataset.qin]=Math.max(0,+i.value||0); updateQty();
-});
-$('#simpleInput').addEventListener('input',e=>{ state.qty.simple=Math.max(0,+e.target.value||0); updateQty(); });
+$('#simpleInput').addEventListener('input',e=>{ state.qty.total=Math.max(0,+e.target.value||0); updateQty(); });
 $$('[data-s]').forEach(b=>b.addEventListener('click',()=>{
-  state.qty.simple=Math.max(0,state.qty.simple + (b.dataset.s==='+'?5:-5));
-  $('#simpleInput').value=state.qty.simple; updateQty();
+  state.qty.total=Math.max(0,state.qty.total + (b.dataset.s==='+'?5:-5));
+  $('#simpleInput').value=state.qty.total; updateQty();
 }));
+$('#excelBtn').addEventListener('click',()=>$('#excelInput').click());
+$('#excelInput').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  state.qty.sheet={ name:f.name, summary:'50 units · S 10 · M 20 · L 15 · XL 5' };
+  state.qty.total=50;
+  renderQuantity();
+  $('#excelNote').textContent='Sheet received — we’ll re-verify the totals when our team reviews your order.';
+  toast('Sheet read — total quantity set to 50 units.');
+});
 function updateQty(){
-  const t=totalQty();
-  $('#qtyTotal').textContent=t;
+  const t=state.qty.total;
   const ok=t>=50;
   $('#qtyCta').disabled=!ok;
   $('#qtyError').hidden=!(t>0 && !ok);
@@ -243,23 +287,12 @@ function specBits(){
   const m=state.merch.fields;
   return [m.capacity||m.size||m.paper, colourName()].filter(Boolean);
 }
-function renderMini(){
-  const show = ['customise','artwork','quantity'].includes(state.screen);
-  $('#miniSummary').hidden=!show;
-  if (!show) return;
-  const bits=[productName(), ...specBits()].filter(Boolean);
-  $('#miniLine').textContent = bits.join(' · ') || 'No product selected yet';
-  const p=price();
-  const rows=[['Product',productName()],['Details',specBits().join(' · ')],['Branding',state.methods.join(', ')||'Not chosen yet'],['Quantity',p.q?p.q+' units':'Not set yet']];
-  $('#miniRows').innerHTML = rows.filter(r=>r[1]).map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('');
-}
-
 /* ---------- quote ---------- */
 function renderQuote(){
   const p=price();
   $('#quoteImg').src = state.cat==='apparel' ? 'assets/product-tee.png' : 'assets/merch-card.png';
   $('#qName').textContent=productName();
-  $('#qSpecs').textContent=[...specBits(), state.placements.length?state.methods.join(' + ')+' · '+state.placements.join(' + '):''].filter(Boolean).join(' · ');
+  $('#qSpecs').textContent=[...specBits(), state.placements.length?'Print: '+state.placements.join(' + '):''].filter(Boolean).join(' · ');
   $('#qRows').innerHTML=`
     <div class="qrow"><span>Product cost</span><b>${inr(p.product)}</b></div>
     <div class="qrow"><span>Customisation cost</span><b>${inr(p.custom)}</b></div>
@@ -290,15 +323,13 @@ function renderReview(){
   const bill=[$('#billLine').value,$('#billCity').value,$('#billState').value,$('#billPin').value,$('#billCountry').value].filter(Boolean).join(', ');
   const ship=$('#sameAddr').checked?'Same as billing':[$('#shipLine').value,$('#shipCity').value,$('#shipState').value,$('#shipPin').value].filter(Boolean).join(', ');
   const art = state.artwork.file ? `${state.artwork.file.name} (${state.artwork.file.type})` : state.artwork.canva ? 'Canva design link' : 'To be shared with the team';
-  const qtyLine = state.cat==='apparel' ? state.sizes.map(s=>`${s}: ${state.qty.sizes[s]||0}`).join(' · ') : '';
   const block=(title,editTarget,rows)=>`<section class="rv"><div class="rv__head"><h3>${title}</h3><button class="rv__edit" data-go="${editTarget}">Edit</button></div>
     <dl>${rows.filter(r=>r[1]).map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl></section>`;
   $('#reviewBlocks').innerHTML =
     block('Product','product',[['Product',productName()],['Specifications',specBits().join(' · ')],['Sizes',state.cat==='apparel'?state.sizes.join(', '):'']]) +
-    block('Customisation','customise',[['Method',state.methods.join(', ')],['Placement',state.placements.join(', ')],['Notes',state.notes]]) +
-    block('Artwork','artwork',[['File',art]]) +
-    block('Quantity','quantity',[[qtyLine?'Size breakdown':'Units',qtyLine||p.q+' units'],['Total',p.q+' units']]) +
-    block('Company and delivery','details',[['Company',co.name],['Contact',co.person+(co.desig?' · '+co.desig:'')],['Email',co.email],['Phone',co.phone],['GST',co.gst],['Billing',bill],['Shipping',ship]]) +
+    block('Customisation','customise',[['Print colour',colourName()],['Placement',state.placements.join(', ')],['Artwork',art],['Notes',state.notes]]) +
+    block('Quantity','quantity',[['Size breakup',state.qty.sheet?state.qty.sheet.name:'Entered manually'],['Total',p.q+' units']]) +
+    block('Company and delivery','details',[['Company',co.name],['Contact',co.person+(co.desig?' · '+co.desig:'')],['Email',co.email],['Phone',co.phone],['GST',co.gst],['Billing',bill],['Shipping',ship],['Required delivery',$('#delDate').value]]) +
     block('Estimated cost','quote',[['Subtotal',inr(p.subtotal)],['GST',inr(p.gst)],['Estimated total',inr(p.total)]]);
 }
 
@@ -327,6 +358,11 @@ function renderConfirmed(){
   $('#cfQty').textContent=p.q+' units';
   $('#cfPaid').textContent=inr(p.advance);
   $('#cfBalance').textContent=inr(p.balance);
+  $('#cfDate').textContent=$('#delDate').value||'To be confirmed';
+  const person=$('#coPerson').value.trim(), email=$('#coEmail').value.trim(), phone=$('#coPhone').value.trim();
+  $('#cfContact').textContent=person||'—';
+  $('#cfEmail').textContent=email||'—';
+  $('#cfPhone').textContent=phone||'—';
 }
 $$('input[name="pm"]').forEach(r=>r.addEventListener('change',()=>{ state.pay.method=r.value; }));
 $('#payCta').addEventListener('click',()=>{
@@ -337,15 +373,18 @@ $('#payCta').addEventListener('click',()=>{
 /* ---------- navigation ---------- */
 function go(screen){
   if (state.screen==='product' && screen==='customise' && !validateProduct()) return;
-  if (state.screen==='customise' && screen==='artwork'){
-    const ok = state.methods.length && state.placements.length;
-    $('#custError').hidden=ok; if(!ok) return;
+  if (state.screen==='customise' && screen==='quantity'){
+    const colourOk = state.colour || ($('#customColorOn').checked && state.customColour);
+    const artOk = state.artwork.file || state.artwork.canva || state.artwork.later;
+    const missing=[];
+    if(!colourOk) missing.push('a print colour (or a custom shade)');
+    if(!state.placements.length) missing.push('at least one print placement');
+    if(!artOk) missing.push('your artwork file, a design link, or “share later”');
+    const ok=!missing.length;
+    const err=$('#custError'); err.hidden=ok;
+    if(!ok){ err.textContent='Still needed: '+missing.join(', ')+'.'; return; }
   }
-  if (state.screen==='artwork' && screen==='quantity'){
-    const ok = state.artwork.file || state.artwork.canva || state.artwork.later;
-    $('#artError').hidden=ok; if(!ok) return;
-  }
-  if (state.screen==='details' && screen==='review' && !validateDetails()) return;
+  if (state.screen==='details' && screen==='quote' && !validateDetails()) return;
 
   state.screen=screen;
   $$('.screen').forEach(s=>s.classList.toggle('is-active', s.id==='s-'+screen));
@@ -354,8 +393,9 @@ function go(screen){
   const inFlow = step!==undefined;
   $('#stepbar').hidden = !inFlow;
   if (inFlow){
-    $('#stepLabel').textContent=`Step ${step+1} of ${STEPS.length}`;
+    $('#stepLabel').textContent=`Step ${String(step+1).padStart(2,'0')} of ${String(STEPS.length).padStart(2,'0')}`;
     $('#stepName').textContent=STEPS[step];
+    $('#stepNext').textContent = step < STEPS.length-1 ? 'Next · '+STEPS[step+1] : 'Final step';
     $('#stepFill').style.width=((step+1)/STEPS.length*100)+'%';
   }
   const back = BACK[screen];
@@ -371,7 +411,6 @@ function go(screen){
   if (screen==='requested') renderRequested();
   if (screen==='payment') renderPayment();
   if (screen==='confirmed') renderConfirmed();
-  renderMini();
   window.scrollTo(0,0);
 }
 document.addEventListener('click',e=>{
@@ -383,7 +422,7 @@ $('#submitReq').addEventListener('click',()=>go('requested'));
 go('landing');
 
 /* ---------- deep links for design review / Figma import ----------
-   #screen=product|customise|artwork|quantity|quote|details|review|requested|payment|confirmed
+   #screen=product|customise|quantity|details|quote|review|requested|payment|confirmed
    pre-fills the Studio Arc sample order so every screen renders with real data. */
 function prefillSample(){
   const setv=(el,v)=>{el.value=v;el.dispatchEvent(new Event('change',{bubbles:true}));};
@@ -398,7 +437,6 @@ function prefillSample(){
   setv($('#apGsm'),'180 GSM');
   chip('#colors','Black');
   ['S','M','L','XL'].forEach(s=>chip('#sizes',s));
-  chip('#methods','Screen printing');
   chip('#placements','Front');
   chip('#placements','Back');
   state.artwork.file={name:'StudioArc_Logo.pdf',size:430080,type:'PDF'};
@@ -406,16 +444,15 @@ function prefillSample(){
   $('#fileMeta').textContent='PDF · 0.4 MB · Ready';
   $('#fileBadge').textContent='PDF';
   $('#fileRow').hidden=false; $('#dropzone').hidden=true;
-  const vals={coName:'Studio Arc Design Pvt. Ltd.',coPerson:'Aarav Mehta',coDesig:'Head of Brand',coEmail:'aarav@studioarc.in',coPhone:'+91 98450 12345',coGst:'29ABCDE1234F1Z5',billLine:'42 Residency Road',billCity:'Bengaluru',billState:'Karnataka',billPin:'560025',billCountry:'India'};
+  const vals={coName:'Studio Arc Design Pvt. Ltd.',coPerson:'Aarav Mehta',coDesig:'Head of Brand',coEmail:'aarav@studioarc.in',coPhone:'+91 98450 12345',coGst:'29ABCDE1234F1Z5',billLine:'42 Residency Road',billCity:'Bengaluru',billState:'Karnataka',billPin:'560025',billCountry:'India',delDate:'2026-08-15'};
   for (const k in vals) setin(document.getElementById(k), vals[k]);
 }
 (function deepLink(){
   const m=(location.hash+'?'+location.search).match(/screen=([a-z]+)/i); if(!m) return;
   const target=m[1];
   prefillSample();
+  state.qty.sheet={ name:'StudioArc_size_breakup.xlsx', summary:'50 units · S 10 · M 20 · L 15 · XL 5' };
+  state.qty.total=50;
   go('quantity');
-  const q={S:10,M:20,L:15,XL:5};
-  for (const k in q){ const i=document.querySelector('[data-qin="'+k+'"]'); if(i) setq(i,q[k]); }
   if (target!=='quantity') go(target);
-  function setq(el,v){ el.value=v; el.dispatchEvent(new Event('input',{bubbles:true})); }
 })();
